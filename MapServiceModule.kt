@@ -23,9 +23,6 @@ class MapServiceModule {
     @Provides
     fun provideMapService(
         restaurantApi: ApiRestaurant
-    ): MapService {
-        return object : MapService {
-            override suspend fun restaurantMarkerList(): List<MarkerData> {
     ): GetMarkerListUseCase {
         return object : GetMarkerListUseCase {
             override suspend fun invoke(): List<MarkerData> {
@@ -35,18 +32,14 @@ class MapServiceModule {
         }
     }
 
-                val list = restaurantApi.getAllRestaurant()
-
-                return list.stream().map {
-                    MarkerData(
-                        id = it.restaurantId,
-                        lat = it.lat,
-                        lon = it.lon,
-                        title = it.restaurantName,
-                        snippet = "",
-                        foodType = it.restaurantType
-                    )
-                }.toList()
+    @Provides
+    fun provideGetMarkerListFlowUseCase(
+        restaurantApi: ApiRestaurant
+    ): GetMarkerListFlowUseCase {
+        return object : GetMarkerListFlowUseCase {
+            override suspend fun invoke(): StateFlow<List<MarkerData>> {
+                val list = restaurantApi.getFilterRestaurant(Filter())
+                return MutableStateFlow(list.map { MarkerData(id = it.restaurantId, lat = it.lat, lon = it.lon, title = it.restaurantName, snippet = "", foodType = it.restaurantTypeCd) }.toList())
             }
         }
     }
