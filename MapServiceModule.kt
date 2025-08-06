@@ -1,18 +1,21 @@
 package com.example.testapp.di.map
 
 import com.example.screen_map.data.MarkerData
-import com.example.screen_map.usecase.MapService
+import com.example.screen_map.usecase.GetMarkerListFlowUseCase
+import com.example.screen_map.usecase.GetMarkerListUseCase
 import com.example.screen_map.usecase.SavePositionUseCase
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.VisibleRegion
 import com.sarang.torang.api.ApiRestaurant
+import com.sarang.torang.data.Filter
 import com.sarang.torang.repository.MapRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlin.streams.toList
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -23,6 +26,14 @@ class MapServiceModule {
     ): MapService {
         return object : MapService {
             override suspend fun restaurantMarkerList(): List<MarkerData> {
+    ): GetMarkerListUseCase {
+        return object : GetMarkerListUseCase {
+            override suspend fun invoke(): List<MarkerData> {
+                val list = restaurantApi.getFilterRestaurant(Filter())
+                return list.map { MarkerData(id = it.restaurantId, lat = it.lat, lon = it.lon, title = it.restaurantName, snippet = "", foodType = it.restaurantTypeCd) }.toList()
+            }
+        }
+    }
 
                 val list = restaurantApi.getAllRestaurant()
 
