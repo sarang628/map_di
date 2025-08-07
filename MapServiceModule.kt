@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.VisibleRegion
 import com.sarang.torang.api.ApiRestaurant
 import com.sarang.torang.data.Filter
+import com.sarang.torang.repository.FindRepository
 import com.sarang.torang.repository.MapRepository
 import dagger.Module
 import dagger.Provides
@@ -34,11 +35,11 @@ class MapServiceModule {
 
     @Provides
     fun provideGetMarkerListFlowUseCase(
-        restaurantApi: ApiRestaurant
+        findRepository: FindRepository
     ): GetMarkerListFlowUseCase {
         return object : GetMarkerListFlowUseCase {
             override suspend fun invoke(): StateFlow<List<MarkerData>> {
-                val list = restaurantApi.getFilterRestaurant(Filter())
+                val list = findRepository.restaurants
                 return MutableStateFlow(list.map { MarkerData(id = it.restaurantId, lat = it.lat, lon = it.lon, title = it.restaurantName, snippet = "", foodType = it.restaurantTypeCd) }.toList())
             }
         }
