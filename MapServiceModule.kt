@@ -1,4 +1,4 @@
-package com.example.testapp.di.map
+package com.sarang.torang.di.map_di
 
 import com.example.screen_map.data.MarkerData
 import com.example.screen_map.usecase.GetMarkerListFlowUseCase
@@ -15,8 +15,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -38,9 +41,11 @@ class MapServiceModule {
         findRepository: FindRepository
     ): GetMarkerListFlowUseCase {
         return object : GetMarkerListFlowUseCase {
-            override suspend fun invoke(): StateFlow<List<MarkerData>> {
-                val list = findRepository.restaurants
-                return MutableStateFlow(list.map { MarkerData(id = it.restaurantId, lat = it.lat, lon = it.lon, title = it.restaurantName, snippet = "", foodType = it.restaurantTypeCd) }.toList())
+            override fun invoke(coroutineScope : CoroutineScope): StateFlow<List<MarkerData>> {
+                return findRepository.restaurants
+                    .map { list ->
+                        list.map { item -> MarkerData(id = item.restaurantId, lat = item.lat, lon = item.lon, title = item.restaurantName, snippet = "", foodType = item.restaurantTypeCd) }
+                    }.stateIn(scope = coroutineScope, started = SharingStarted.Eagerly, initialValue = emptyList())
             }
         }
     }
@@ -57,12 +62,7 @@ class MapServiceModule {
             }
 
             override fun load(): CameraPosition {
-                return CameraPosition(
-                    LatLng(mapRepository.loadLat(), mapRepository.loadLon()),
-                    mapRepository.loadZoom(),
-                    0f,
-                    0f
-                )
+                return CameraPosition(LatLng(mapRepository.loadLat(), mapRepository.loadLon()), mapRepository.loadZoom(), 0f, 0f)
             }
 
             override fun saveBound(visibleRegion: VisibleRegion) {
