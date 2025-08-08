@@ -31,7 +31,7 @@ class MapServiceModule {
         return object : GetMarkerListUseCase {
             override suspend fun invoke(): List<MarkerData> {
                 val list = restaurantApi.getFilterRestaurant(Filter())
-                return list.map { MarkerData(id = it.restaurantId, lat = it.lat, lon = it.lon, title = it.restaurantName, snippet = "", foodType = it.restaurantTypeCd) }.toList()
+                return list.map { MarkerData(id = it.restaurantId ?: -1, lat = it.lat ?: 0.0, lon = it.lon ?: 0.0, title = it.restaurantName ?: "", snippet = "", foodType = it.restaurantTypeCd ?: "") }.toList()
             }
         }
     }
@@ -44,7 +44,7 @@ class MapServiceModule {
             override fun invoke(coroutineScope : CoroutineScope): StateFlow<List<MarkerData>> {
                 return findRepository.restaurants
                     .map { list ->
-                        list.map { item -> MarkerData(id = item.restaurantId, lat = item.lat, lon = item.lon, title = item.restaurantName, snippet = "", foodType = item.restaurantTypeCd) }
+                        list.map { item -> MarkerData(id = item.restaurantId ?: -1, lat = item.lat ?: 0.0, lon = item.lon ?: 0.0, title = item.restaurantName ?: "", snippet = "", foodType = item.restaurantTypeCd ?: "") }
                     }.stateIn(scope = coroutineScope, started = SharingStarted.Eagerly, initialValue = emptyList())
             }
         }
