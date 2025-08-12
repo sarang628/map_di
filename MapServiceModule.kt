@@ -44,7 +44,7 @@ class MapServiceModule {
             override fun invoke(coroutineScope : CoroutineScope): StateFlow<List<MarkerData>> {
                 return findRepository.restaurants
                     .map { list ->
-                        list.map { item -> MarkerData(id = item.restaurantId, lat = item.lat, lon = item.lon, title = item.restaurantName, snippet = "", foodType = item.restaurantTypeCd) }
+                        list.map { item -> MarkerData(id = item.restaurantId, lat = item.lat, lon = item.lon, title = item.restaurantName, snippet = "", foodType = item.restaurantTypeCd, rating = item.rating.toString())}
                     }.stateIn(scope = coroutineScope, started = SharingStarted.Eagerly, initialValue = emptyList())
             }
         }
