@@ -16,7 +16,7 @@ class SetSelectedMarkUseCaseImpl {
     ): SetSelectedMarkUseCase {
         return object : SetSelectedMarkUseCase {
             override suspend fun invoke(restaurantId : Int) {
-                findRepository.selectRestaurant(restaurantId)
+                findRepository.selectRestaurantFromMarker(restaurantId)
         }}
     }
 }
