@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.VisibleRegion
 import com.sarang.torang.api.ApiRestaurant
 import com.sarang.torang.data.Filter
+import com.sarang.torang.data.remote.response.FilterApiModel
 import com.sarang.torang.repository.FindRepository
 import com.sarang.torang.repository.MapRepository
 import dagger.Module
@@ -30,7 +31,7 @@ class MapServiceModule {
     ): GetMarkerListUseCase {
         return object : GetMarkerListUseCase {
             override suspend fun invoke(): List<MarkerData> {
-                val list = restaurantApi.getFilterRestaurant(Filter())
+                val list = restaurantApi.getFilterRestaurant(FilterApiModel())
                 return list.map { MarkerData(id = it.restaurantId ?: -1, lat = it.lat ?: 0.0, lon = it.lon ?: 0.0, title = it.restaurantName ?: "", snippet = "", foodType = it.restaurantTypeCd ?: "") }.toList()
             }
         }
