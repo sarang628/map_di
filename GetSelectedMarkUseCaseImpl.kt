@@ -23,7 +23,7 @@ class GetSelectedMarkUseCaseImpl {
         return object : GetSelectedMarkUseCase {
             override fun invoke(coroutineScope: CoroutineScope): StateFlow<MarkerData> {
                 return findRepository.selectedRestaurant.map {
-                    MarkerData(id = it.restaurantId, lat = it.lat, lon = it.lon, title = it.restaurantName, snippet = "", foodType = it.restaurantTypeCd, rating = "${it.rating}", price = it.prices)
+                    MarkerData(id = it.restaurant.restaurantId, lat = it.restaurant.lat, lon = it.restaurant.lon, title = it.restaurant.restaurantName, snippet = "", foodType = it.restaurant.restaurantTypeCd, rating = "${it.restaurant.rating}", price = it.restaurant.prices)
                 }.stateIn(scope = coroutineScope, started = SharingStarted.Eagerly, initialValue = MarkerData())
             }
         }
