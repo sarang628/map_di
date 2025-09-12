@@ -1,7 +1,7 @@
 package com.sarang.torang.di.map_di
 
 import com.example.screen_map.usecase.SetSelectedMarkUseCase
-import com.sarang.torang.di.repository.repository.impl.FindRepositoryImpl
+import com.sarang.torang.di.repository.FindRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

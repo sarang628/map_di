@@ -4,8 +4,6 @@ import android.util.Log
 import com.example.screen_map.data.MarkerData
 import com.example.screen_map.usecase.FindRestaurantUseCase
 import com.sarang.torang.api.ApiRestaurant
-import com.sarang.torang.di.repository.repository.impl.RestaurantRepositoryImpl
-import com.sarang.torang.repository.RestaurantRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
