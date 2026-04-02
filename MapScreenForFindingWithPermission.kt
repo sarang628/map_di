@@ -35,10 +35,14 @@ import com.sryang.library.compose.workflow.RationaleDialog
 fun MapScreenForFindingWithPermission(
     viewModel: BestPracticeViewModel = BestPracticeViewModel(),
     permission : String = Manifest.permission.ACCESS_FINE_LOCATION,
-    contents : @Composable () -> Unit = { }
+    onPermissionResult: (Boolean) -> Unit = {},
+    contents : @Composable () -> Unit = { },
 ) {
     var timeDiff : Long by remember { mutableStateOf(0L) } // 영구 권한 거부 상태 체크를 위한 시간
-    val requestPermission = rememberPermissionState(permission, { viewModel.permissionResult(it, System.currentTimeMillis() - timeDiff); })
+    val requestPermission = rememberPermissionState(permission = permission,
+                                                    onPermissionResult = { viewModel.permissionResult(it, System.currentTimeMillis() - timeDiff);
+                                                                           onPermissionResult.invoke(it) }
+    )
     val state = viewModel.state
     var stateTxt by remember { mutableStateOf("RequestPermission") }
 
@@ -54,7 +58,7 @@ fun MapScreenForFindingWithPermission(
     }
 
     Box {
-        Text(state.toString().split("$")[1].split("@")[0])
+        //Text(state.toString().split("$")[1].split("@")[0])
         contents.invoke()
     }
 }
