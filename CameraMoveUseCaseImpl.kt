@@ -18,7 +18,7 @@ class CameraMoveUseCaseImpl {
         findRepository: FindRepositoryImpl
     ) : CameraMoveUseCase {
         return object : CameraMoveUseCase{
-            override fun invoke(): StateFlow<Triple<Double, Double, Float>?> {
+            override fun invoke(): StateFlow<Triple<Double, Double, Float?>?> {
                 return findRepository.cameraPosition
             }
         }
